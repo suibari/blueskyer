@@ -1,0 +1,14 @@
+{
+  "name": "blueskyer",
+  "version": "1.0.0",
+  "description": "a convinient bluesky wrapper library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "suibari",
+  "license": "MIT",
+  "dependencies": {
+    "@atproto/api": "^0.10.4"
+  }
+}
