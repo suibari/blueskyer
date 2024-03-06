@@ -10,5 +10,14 @@
   "license": "MIT",
   "dependencies": {
     "@atproto/api": "^0.10.4"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suibari/blueskyer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/suibari/blueskyer/issues"
+  },
+  "homepage": "https://github.com/suibari/blueskyer#readme"
 }
