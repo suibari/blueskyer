@@ -9,9 +9,11 @@
   "author": "suibari",
   "license": "MIT",
   "dependencies": {
-    "@atproto/api": "^0.10.4"
+    "@atproto/api": "^0.10.4",
+    "@ipld/car": "^5.3.0",
+    "@ipld/dag-cbor": "^9.2.0",
+    "websocket": "^1.0.34"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/suibari/blueskyer.git"

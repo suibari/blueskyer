@@ -1,5 +1,7 @@
-const MyBskyAgent = require('./src/MyBskyAgent')
+const Blueskyer = require('./src/Blueskyer');
+const BlueskySubscription = require('./src/BlueskySubscription');
 
 module.exports = {
-  MyBskyAgent,
+  Blueskyer,
+  BlueskySubscription,
 }

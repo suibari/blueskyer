@@ -2,23 +2,10 @@ const { BskyAgent } = require('@atproto/api');
 const service = 'https://bsky.social';
 
 /**
- * BskyAgentクラスを継承したMyBskyAgentクラス
+ * BskyAgentクラスを継承したBlueskyerクラス
  * @extends BskyAgent
  */
-class MyBskyAgent extends BskyAgent {
-  /**
-   * アクセストークン
-   * @type {string}
-   * @static
-   */
-  static accessJwt;
-  /**
-   * リフレッシュトークン
-   * @type {string}
-   * @static
-   */
-  static refreshJwt;
-
+class Blueskyer extends BskyAgent {
   /**
    * MyBskyAgentのインスタンスを初期化する
    */
@@ -255,6 +242,7 @@ class MyBskyAgent extends BskyAgent {
       feeds = feeds.concat(response.data.feed);
       cursor = response.data.cursor;
     };
+    feeds = feeds.slice(0, threshold_tl);
     return feeds;
   }
 
@@ -277,6 +265,7 @@ class MyBskyAgent extends BskyAgent {
         likes = likes.concat(response.data.feed);
         cursor = response.data.cursor;
       };
+      likes = likes.slice(0, threshold_like);
       return likes;
     } catch(e) {
       return [];
@@ -302,6 +291,7 @@ class MyBskyAgent extends BskyAgent {
         records = records.concat(response.records);
         cursor = response.cursor;
       };
+      records = records.slice(0, threshold_like);
       return records;
     } catch(e) {
       return [];
@@ -346,17 +336,17 @@ class MyBskyAgent extends BskyAgent {
    * @param {int} threshold_nodes - 出力のProfile配列要素数
    * @param {int} threshold_tl - 取得するfeed数
    * @param {int} threshold_like - 取得するいいね数
+   * @param {int} SCORE_REPLY - リプライで加点するエンゲージメントスコア
+   * @param {int} SCORE_LIKE - いいねで加点するエンゲージメントスコア
    * @returns
    */
-  async getArraySortedReplyToAndLikeCount(handle, threshold_nodes, threshold_tl, threshold_like) {
-    const SCORE_REPLY = 3;
-    const SCORE_LIKE = 1;
+  async getInvolvedEngagements(handle, threshold_nodes, threshold_tl, threshold_like, SCORE_REPLY, SCORE_LIKE) {
     let didLike = [];
     let resultArray = [];
     let didArray = [];
 
     const feeds = await this.getConcatAuthorFeed(handle, threshold_tl);
-    console.log("[INFO] got " + feeds.length + " posts by " + handle);
+    // console.log("[INFO] got " + feeds.length + " posts by " + handle);
     // const likes = await this.getConcatActorLikes(handle, threshold_like); // 現状、likeがとれるのはログインユーザだけ
     const records = await this.getConcatActorLikeRecords(handle, threshold_like);
     for (const record of records) {
@@ -364,7 +354,7 @@ class MyBskyAgent extends BskyAgent {
       const did = uri.match(/did:plc:\w+/); // uriからdid部分のみ抜き出し
       didLike.push(did[0]);
     };
-    console.log("[INFO] got " + didLike.length + " likes by " + handle);
+    // console.log("[INFO] got " + didLike.length + " likes by " + handle);
   
     // 誰に対してリプライしたかをカウント
     for (const [index, feed] of Object.entries(feeds)) {
@@ -409,10 +399,14 @@ class MyBskyAgent extends BskyAgent {
     let friendsWithProf = [];
     if (didArray.length > 0) { // 誰にもリプライしてない人は実行しない
       friendsWithProf = await this.getConcatProfiles(didArray);
-    }
-    
+    };
+    // エンゲージメントスコアを格納しておく
+    for (const [index, friend] of Object.entries(friendsWithProf)) {
+      friend.engagement = resultArray[index].score;
+    };
+
     return friendsWithProf;
   }
 }
 
-module.exports = MyBskyAgent;
+module.exports = Blueskyer;
