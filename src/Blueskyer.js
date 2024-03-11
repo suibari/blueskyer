@@ -333,6 +333,46 @@ class Blueskyer extends BskyAgent {
   }
 
   /**
+   * 未実装API https://github.com/bluesky-social/atproto/blob/38656e71ff2faf9ea88b4ea650567814e7f1248d/lexicons/app/bsky/actor/defs.json の実装
+   * @param {Object} queryParams - actor, others[] を指定
+   * @returns
+   */
+  async getRelationships(queryParams) {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${this.accessJwt}`,
+      }
+    };
+
+    // const url = new URL("https://bsky.social/xrpc/app.bsky.graph.getRelationships");
+    const url = new URL("https://api.bsky.app/xrpc/app.bsky.graph.getRelationships");
+    // 重複したキーを持つパラメータを追加する
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach(val => url.searchParams.append(key, val));
+      } else {
+        url.searchParams.append(key, value);
+      }
+    });
+    // console.log(url.toString())
+    
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      };
+      const data = await response.json();
+      return data;
+
+    } catch(e) {
+      console.error('There was a problem with your fetch operation:', e);
+      throw e;
+    };
+  }
+
+  /**
    * 指定されたユーザが返信・いいねした数から、各ユーザに対するエンゲージメントのスコアを取得、上位順に並べたProfile配列を返す
    * @param {string} handle - ハンドル名
    * @param {int} threshold_nodes - 出力のProfile配列要素数
