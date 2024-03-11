@@ -17,9 +17,10 @@ class Blueskyer extends BskyAgent {
   /**
    * 指定されたユーザーの全てのフォロワーを取得する
    * @param {string} handleordid - ハンドルまたはDID
+   * @param {int} threshold_follower - フォロワーしきい値
    * @returns {Promise<Array>} - フォロワーの配列
    */
-  async getConcatFollowers(handleordid) {
+  async getConcatFollowers(handleordid, threshold_follower) {
     let followers = [];
     
     const params = {
@@ -29,7 +30,7 @@ class Blueskyer extends BskyAgent {
     let response = await this.getFollowers(params);
     followers = response.data.followers;
 
-    while ('cursor' in response.data) {
+    while (('cursor' in response.data) && (threshold_follower > followers.length)) {
       const paramswithcursor = Object.assign(params, {
         cursor: response.data.cursor
       });
@@ -43,9 +44,10 @@ class Blueskyer extends BskyAgent {
   /**
    * 指定されたユーザーの全てのフォローを取得する
    * @param {string} handleordid - ハンドルまたはDID
+   * @param {int} threshold_follow - フォローしきい値
    * @returns {Promise<Array>} - フォローの配列
    */
-  async getConcatFollows(handleordid) {
+  async getConcatFollows(handleordid, threshold_follow) {
     let follows = [];
     
     const params = {
@@ -55,7 +57,7 @@ class Blueskyer extends BskyAgent {
     let response = await this.getFollows(params);
     follows = response.data.follows;
 
-    while ('cursor' in response.data) {
+    while (('cursor' in response.data) && (threshold_follow > follows.length)) {
       const paramswithcursor = Object.assign(params, {
         cursor: response.data.cursor
       });

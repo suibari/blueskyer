@@ -1,4 +1,5 @@
 const { Blueskyer } = require('../index');
+const HANDLE = process.env.BSKY_IDENTIFIER;
 
 (async () => {
   const agent = new Blueskyer();
@@ -7,6 +8,16 @@ const { Blueskyer } = require('../index');
     password: process.env.BSKY_APP_PASSWORD,
   });
   await agent.createOrRefleshSession();
-  const profiles = await agent.getInvolvedEngagements(process.env.BSKY_IDENTIFIER, 36, 1000, 100, 3, 1);
+
+  // concatfollow
+  const follows = await agent.getConcatFollows(HANDLE, 1000);
+  console.log(follows.length);
+
+  // concatfollower
+  const followers = await agent.getConcatFollowers(HANDLE, 1000);
+  console.log(followers.length);
+
+  // engagement
+  const profiles = await agent.getInvolvedEngagements(HANDLE, 36, 1000, 100, 3, 1);
   console.log(profiles);
 })();
