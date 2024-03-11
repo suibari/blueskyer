@@ -1,6 +1,6 @@
 {
   "name": "blueskyer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "a convinient bluesky wrapper library",
   "main": "index.js",
   "scripts": {
