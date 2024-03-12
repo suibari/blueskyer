@@ -364,12 +364,28 @@ class Blueskyer extends BskyAgent {
         throw new Error('Network response was not ok');
       };
       const data = await response.json();
-      return data;
+      return data.relationships;
 
     } catch(e) {
       console.error('There was a problem with your fetch operation:', e);
       throw e;
     };
+  }
+
+  /**
+   * didに指定したユーザがdidArrayに指定したユーザそれぞれをフォローしているか
+   * @param {string} did 
+   * @param {string<Array>} didArray 
+   * @returns - フォローのBooleanとDIDを返すオブジェクト配列
+   */
+  async isFollow(did, didArray) {
+    const relationships = await this.getRelationships({actor: did, others: didArray});
+    const ObjectArray = relationships.map((item, index) => ({
+      following: item.following ? true : false,
+      did: didArray[index]
+    }));
+
+    return ObjectArray;
   }
 
   /**

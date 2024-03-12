@@ -19,10 +19,14 @@ const HANDLE = process.env.BSKY_IDENTIFIER;
 
   // relationships
   const relationships = await agent.getRelationships({
-    actor: HANDLE,
-    others: [HANDLE],
+    actor: process.env.BSKY_DID,
+    others: [process.env.DID1, process.env.DID2],
   })
   console.log(relationships);
+
+  // isFollow
+  const followArray = await agent.isFollow(process.env.BSKY_DID, [process.env.DID1, process.env.DID2]);
+  console.log(followArray);
 
   // engagement
   const profiles = await agent.getInvolvedEngagements(HANDLE, 36, 1000, 100, 3, 1);
