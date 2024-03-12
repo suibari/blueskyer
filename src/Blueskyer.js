@@ -379,12 +379,22 @@ class Blueskyer extends BskyAgent {
    * @returns - フォローのBooleanとDIDを返すオブジェクト配列
    */
   async isFollow(did, didArray) {
-    const relationships = await this.getRelationships({actor: did, others: didArray});
-    const ObjectArray = relationships.map((item, index) => ({
-      following: item.following ? true : false,
-      did: didArray[index]
-    }));
-
+    const ObjectArray = [];
+  
+    // didArrayを30ずつのグループに分割する
+    for (let i = 0; i < didArray.length; i += 30) {
+      const slicedDidArray = didArray.slice(i, i + 30);
+      const relationships = await this.getRelationships({ actor: did, others: slicedDidArray });
+  
+      // リレーションシップをオブジェクト配列に変換して追加
+      relationships.forEach((item, index) => {
+        ObjectArray.push({
+          following: item.following ? true : false,
+          did: slicedDidArray[index]
+        });
+      });
+    }
+  
     return ObjectArray;
   }
 
