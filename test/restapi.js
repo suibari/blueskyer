@@ -28,6 +28,10 @@ const HANDLE = process.env.BSKY_IDENTIFIER;
   const followArray = await agent.isFollow(process.env.BSKY_DID, [process.env.DID1, process.env.DID2]);
   console.log(followArray);
 
+  // isMutual
+  const mutualArray = await agent.isMutual(process.env.BSKY_DID, [process.env.DID1, process.env.DID2, process.env.DID3]);
+  console.log(mutualArray);  
+
   // engagement
   const profiles = await agent.getInvolvedEngagements(HANDLE, 36, 1000, 100, 3, 1);
   // console.log(profiles);

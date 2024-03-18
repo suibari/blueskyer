@@ -186,18 +186,24 @@ class Blueskyer extends BskyAgent {
    * @param {Object} actor - アクター
    * @param {Object<Array>} follows - フォローの配列
    */
-  async setMutual(actor, follows) {
-    // 自分がフォローしている人が自分をフォローしていたらmutualをtrueに、そうでなければfalseにする
-    for (const follow of follows) {
-      const followsOfFollows = await this.getConcatFollows(follow.did);
-      follow.mutual = false;
-      for (const followOfFollows of followsOfFollows) {
-        if (actor.did == followOfFollows.did) {
-          follow.mutual = true;
-          break;
-        };
-      };
-    };
+  async isMutual(did, didArray) {
+    const ObjectArray = [];
+  
+    // didArrayを30ずつのグループに分割する
+    for (let i = 0; i < didArray.length; i += 30) {
+      const slicedDidArray = didArray.slice(i, i + 30);
+      const relationships = await this.getRelationships({ actor: did, others: slicedDidArray });
+  
+      // リレーションシップをオブジェクト配列に変換して追加
+      relationships.forEach((item, index) => {
+        ObjectArray.push({
+          mutual: (item.following && item.followedBy) ? true : false,
+          did: slicedDidArray[index]
+        });
+      });
+    }
+  
+    return ObjectArray;
   }
 
   /**
