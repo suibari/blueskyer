@@ -426,7 +426,9 @@ class Blueskyer extends BskyAgent {
     for (const record of records) {
       const uri = record.value.subject.uri;
       const did = uri.match(/did:plc:\w+/); // uriからdid部分のみ抜き出し
-      didLike.push(did[0]);
+      if (did) {
+        didLike.push(did[0]);
+      };
     };
     // console.log("[INFO] got " + didLike.length + " likes by " + handle);
   
