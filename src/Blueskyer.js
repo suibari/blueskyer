@@ -209,12 +209,12 @@ class Blueskyer extends BskyAgent {
   /**
    * アクセストークンとリフレッシュトークンが未取得ならセッションを作成、既取得で期限切れならセッションをリフレッシュ
    */
-  async createOrRefleshSession() {
+  async createOrRefleshSession(identifier, password) {
     if ((!this.accessJwt) && (!this.refreshJwt)) {
       // 初回起動時にaccsessJwt取得
       const response = await this.login({
-        identifier: process.env.BSKY_IDENTIFIER,
-        password: process.env.BSKY_APP_PASSWORD
+        identifier: identifier,
+        password: password
       });
       this.accessJwt = response.data.accessJwt;
       this.refreshJwt = response.data.refreshJwt;

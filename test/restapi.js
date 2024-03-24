@@ -7,7 +7,7 @@ const HANDLE = process.env.BSKY_IDENTIFIER;
     identifier: process.env.BSKY_IDENTIFIER,
     password: process.env.BSKY_APP_PASSWORD,
   });
-  await agent.createOrRefleshSession();
+  await agent.createOrRefleshSession(process.env.BSKY_IDENTIFIER, process.env.BSKY_APP_PASSWORD);
 
   // concatfollow
   const follows = await agent.getConcatFollows(HANDLE, 1000);
